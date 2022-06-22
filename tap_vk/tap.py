@@ -9,12 +9,15 @@ from tap_vk.streams import (
     VKStream,
     AdsStream,
     AdsLayoutStream,
+    AdsTargetingStream,
 )
+
 # TODO: Compile a list of custom stream types here
 #       OR rewrite discover_streams() below with your custom logic.
 STREAM_TYPES = [
     AdsStream,
     AdsLayoutStream,
+    AdsTargetingStream
 ]
 
 
