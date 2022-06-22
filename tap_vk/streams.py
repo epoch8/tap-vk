@@ -166,3 +166,35 @@ class CampaignsStream(VKStream):
         params = super().get_url_params(context, next_page_token)
         params["include_deleted"] = 1
         return params
+
+
+class CategoriesStream(VKStream):
+    """Define custom stream."""
+
+    name = "categories"
+    path = "/ads.getCategories"
+    records_jsonpath = "$[response][v2][*]"
+    primary_keys = ["id"]
+    replication_key = None
+    schema = th.PropertiesList(
+        th.Property(
+            "id",
+            th.IntegerType,
+        ),
+        th.Property("name", th.StringType),
+        th.Property(
+            "subcategories", th.ArrayType(
+                th.ObjectType(
+                    th.Property("id", th.IntegerType),
+                    th.Property("name", th.StringType)
+                )
+            )
+        ),
+    ).to_dict()
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+        params["lang"] = "en"
+        return params

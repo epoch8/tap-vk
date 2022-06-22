@@ -26,7 +26,7 @@ class VKStream(RESTStream):
     #     """Return the API URL root, configurable via tap settings."""
     #     return self.config["api_url"]
 
-    records_jsonpath = "$[response][*]"  # Or override `parse_response`.
+    records_jsonpath = "$[response][*]"
     next_page_token_jsonpath = "$.next_page"  # Or override `get_next_page_token`.
 
     @property
