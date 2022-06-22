@@ -9,39 +9,52 @@ from tap_vk.client import VKStream
 
 # TODO: Delete this is if not using json files for schema definition
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
-# TODO: - Override `UsersStream` and `GroupsStream` with your own stream definition.
-#       - Copy-paste as many times as needed to create multiple stream types.
 
 
 class AdsStream(VKStream):
     """Define custom stream."""
-    name = "get_ads"
+
+    name = "ads"
     path = "/ads.getAds"
     primary_keys = ["id"]
     replication_key = None
     schema = th.PropertiesList(
-        th.Property("name", th.StringType),
         th.Property(
             "id",
-            th.StringType,
-            description="The user's system ID"
-        ),
-        th.Property(
-            "age",
             th.IntegerType,
-            description="The user's age in years"
         ),
+        th.Property("campaign_id", th.IntegerType),
+        th.Property("status", th.IntegerType),
+        th.Property("approved", th.IntegerType),
+        th.Property("create_time", th.IntegerType),
+        th.Property("update_time", th.IntegerType),
+        th.Property("goal_type", th.IntegerType),
+        th.Property("cost_type", th.IntegerType),
+        th.Property("day_limit", th.StringType),
+        th.Property("all_limit", th.StringType),
+        th.Property("start_time", th.IntegerType),
+        th.Property("stop_time", th.IntegerType),
+        th.Property("category1_id", th.IntegerType),
+        th.Property("category2_id", th.IntegerType),
+        th.Property("age_restriction", th.IntegerType),
+        th.Property("name", th.StringType),
         th.Property(
-            "email",
-            th.StringType,
-            description="The user's email address"
+            "events_retargeting_groups", th.StringType
         ),
-        th.Property("street", th.StringType),
-        th.Property("city", th.StringType),
-        th.Property(
-            "state",
-            th.StringType,
-            description="State name in ISO 3166-2 format"
-        ),
-        th.Property("zip", th.StringType),
+        th.Property("conversion_pixel_id", th.IntegerType),
+        th.Property("conversion_event_id", th.IntegerType),
+        th.Property("ad_format", th.IntegerType),
+        th.Property("ocpm", th.StringType),
+        th.Property("ad_platform", th.StringType),
+        th.Property("publisher_platforms", th.StringType),
+        th.Property("publisher_platforms_auto", th.IntegerType),
+        th.Property("autobidding", th.IntegerType),
+        th.Property("has_campaign_budget_optimization", th.BooleanType),
     ).to_dict()
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+        params["include_deleted"] = 1
+        return params
