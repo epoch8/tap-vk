@@ -34,9 +34,9 @@ class VKStream(RESTStream):
         """Return a new authenticator object."""
         return APIKeyAuthenticator.create_for_stream(
             self,
-            key="x-api-key",
-            value=self.config.get("api_key"),
-            location="header"
+            key="access_token",
+            value=self.config.get("access_token"),
+            location="params"
         )
 
     @property
@@ -72,6 +72,9 @@ class VKStream(RESTStream):
     ) -> Dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization."""
         params: dict = {}
+        params["v"] = "5.131"
+        params["account_id"] = self.config.get("account_id")
+        params["client_id"] = self.config.get("client_id")
         if next_page_token:
             params["page"] = next_page_token
         if self.replication_key:
@@ -92,7 +95,6 @@ class VKStream(RESTStream):
     def parse_response(self, response: requests.Response) -> Iterable[dict]:
         """Parse the response and return an iterator of result rows."""
         # TODO: Parse response body and return a set of records.
-
         yield from extract_jsonpath(self.records_jsonpath, input=response.json())
 
     def post_process(self, row: dict, context: Optional[dict]) -> dict:

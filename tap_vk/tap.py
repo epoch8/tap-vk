@@ -27,6 +27,18 @@ class TapVK(Tap):
             required=True,
             description="The token to authenticate against the API service"
         ),
+        th.Property(
+            "account_id",
+            th.StringType,
+            required=True,
+            description="Идентификатор рекламного кабинета"
+        ),
+        th.Property(
+            "client_id",
+            th.StringType,
+            required=True,
+            description="Идентификатор клиента, у которого запрашиваются рекламные объявления."
+        )
     ).to_dict()
 
     def discover_streams(self) -> List[Stream]:
