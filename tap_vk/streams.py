@@ -58,3 +58,39 @@ class AdsStream(VKStream):
         params = super().get_url_params(context, next_page_token)
         params["include_deleted"] = 1
         return params
+
+
+class AdsLayoutStream(VKStream):
+    """Define custom stream."""
+
+    name = "ads"
+    path = "/ads.getAdsLayout"
+    primary_keys = ["id"]
+    replication_key = None
+    schema = th.PropertiesList(
+        th.Property(
+            "id",
+            th.IntegerType,
+        ),
+        th.Property("campaign_id", th.IntegerType),
+        th.Property("goal_type", th.IntegerType),
+        th.Property("cost_type", th.IntegerType),
+        th.Property("age_restriction", th.IntegerType),
+        th.Property("title", th.StringType),
+        th.Property("link_type", th.IntegerType),
+        th.Property("link_url", th.StringType),
+        th.Property("link_domain", th.StringType),
+        th.Property("ad_format", th.IntegerType),
+        th.Property("preview_link", th.StringType),
+        th.Property("image_src", th.StringType),
+        th.Property("hide_likes", th.BooleanType),
+    ).to_dict()
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+        params["include_deleted"] = 1
+        return params
+
+
