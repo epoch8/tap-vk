@@ -129,3 +129,40 @@ class AdsTargetingStream(VKStream):
         params = super().get_url_params(context, next_page_token)
         params["include_deleted"] = 1
         return params
+
+
+class CampaignsStream(VKStream):
+    """Define custom stream."""
+
+    name = "campaigns"
+    path = "/ads.getCampaigns"
+    primary_keys = ["id"]
+    replication_key = None
+    schema = th.PropertiesList(
+        th.Property(
+            "id",
+            th.IntegerType,
+        ),
+        th.Property("status", th.IntegerType),
+        th.Property("create_time", th.IntegerType),
+        th.Property("update_time", th.IntegerType),
+        th.Property("goal_type", th.IntegerType),
+        th.Property("day_limit", th.StringType),
+        th.Property("all_limit", th.StringType),
+        th.Property("start_time", th.IntegerType),
+        th.Property("stop_time", th.IntegerType),
+        th.Property("name", th.StringType),
+        th.Property(
+            "type", th.StringType
+        ),
+        th.Property("user_goal_type", th.IntegerType),
+        th.Property("views_limit", th.IntegerType),
+        th.Property("is_cbo_enabled", th.BooleanType),
+    ).to_dict()
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+        params["include_deleted"] = 1
+        return params

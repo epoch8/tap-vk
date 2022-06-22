@@ -10,6 +10,7 @@ from tap_vk.streams import (
     AdsStream,
     AdsLayoutStream,
     AdsTargetingStream,
+    CampaignsStream,
 )
 
 # TODO: Compile a list of custom stream types here
@@ -17,7 +18,8 @@ from tap_vk.streams import (
 STREAM_TYPES = [
     AdsStream,
     AdsLayoutStream,
-    AdsTargetingStream
+    AdsTargetingStream,
+    CampaignsStream
 ]
 
 
