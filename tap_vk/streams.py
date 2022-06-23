@@ -38,7 +38,6 @@ class AdsStream(VKStream):
         th.Property("category2_id", th.IntegerType),
         th.Property("age_restriction", th.IntegerType),
         th.Property("name", th.StringType),
-        th.Property("events_retargeting_groups", th.StringType),
         th.Property("conversion_pixel_id", th.IntegerType),
         th.Property("conversion_event_id", th.IntegerType),
         th.Property("ad_format", th.IntegerType),
