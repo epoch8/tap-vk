@@ -38,9 +38,7 @@ class AdsStream(VKStream):
         th.Property("category2_id", th.IntegerType),
         th.Property("age_restriction", th.IntegerType),
         th.Property("name", th.StringType),
-        th.Property(
-            "events_retargeting_groups", th.StringType
-        ),
+        th.Property("events_retargeting_groups", th.StringType),
         th.Property("conversion_pixel_id", th.IntegerType),
         th.Property("conversion_event_id", th.IntegerType),
         th.Property("ad_format", th.IntegerType),
@@ -158,9 +156,7 @@ class CampaignsStream(VKStream):
         th.Property("start_time", th.IntegerType),
         th.Property("stop_time", th.IntegerType),
         th.Property("name", th.StringType),
-        th.Property(
-            "type", th.StringType
-        ),
+        th.Property("type", th.StringType),
         th.Property("user_goal_type", th.IntegerType),
         th.Property("views_limit", th.IntegerType),
         th.Property("is_cbo_enabled", th.BooleanType),
@@ -195,12 +191,13 @@ class CategoriesStream(VKStream):
         ),
         th.Property("name", th.StringType),
         th.Property(
-            "subcategories", th.ArrayType(
+            "subcategories",
+            th.ArrayType(
                 th.ObjectType(
                     th.Property("id", th.IntegerType),
-                    th.Property("name", th.StringType)
+                    th.Property("name", th.StringType),
                 )
-            )
+            ),
         ),
     ).to_dict()
 
@@ -227,7 +224,27 @@ class StatisticsCampaignStream(VKStream):
             th.IntegerType,
         ),
         th.Property("type", th.StringType),
-        th.Property("stats", th.StringType)
+        th.Property(
+            "stats",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("day", th.StringType),
+                    th.Property("month", th.StringType),
+                    th.Property("overall", th.IntegerType),
+                    th.Property("spent", th.NumberType),
+                    th.Property("impressions", th.StringType),
+                    th.Property("clicks", th.IntegerType),
+                    th.Property("reach", th.IntegerType),
+                    th.Property("join_rate", th.IntegerType),
+                    th.Property("link_external_clicks", th.IntegerType),
+                    th.Property("ctr", th.NumberType),
+                    th.Property("uniq_views_count", th.IntegerType),
+                    th.Property("effective_cost_per_click", th.NumberType),
+                    th.Property("effective_cost_per_mille", th.NumberType),
+                    th.Property("effective_cpf", th.NumberType),
+                )
+            ),
+        ),
     ).to_dict()
 
     def get_url_params(
@@ -240,7 +257,6 @@ class StatisticsCampaignStream(VKStream):
         params["date_to"] = "2022-06-22"
         params["ids"] = context["campaign_id"]
         return params
-
 
 
 class StatisticsAdsStream(VKStream):
@@ -258,7 +274,27 @@ class StatisticsAdsStream(VKStream):
             th.IntegerType,
         ),
         th.Property("type", th.StringType),
-        th.Property("stats", th.StringType)
+        th.Property(
+            "stats",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("day", th.StringType),
+                    th.Property("month", th.StringType),
+                    th.Property("overall", th.IntegerType),
+                    th.Property("spent", th.NumberType),
+                    th.Property("impressions", th.StringType),
+                    th.Property("clicks", th.IntegerType),
+                    th.Property("reach", th.IntegerType),
+                    th.Property("join_rate", th.IntegerType),
+                    th.Property("link_external_clicks", th.IntegerType),
+                    th.Property("ctr", th.NumberType),
+                    th.Property("uniq_views_count", th.IntegerType),
+                    th.Property("effective_cost_per_click", th.NumberType),
+                    th.Property("effective_cost_per_mille", th.NumberType),
+                    th.Property("effective_cpf", th.NumberType),
+                )
+            ),
+        ),
     ).to_dict()
 
     def get_url_params(
@@ -266,8 +302,8 @@ class StatisticsAdsStream(VKStream):
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
         params["ids_type"] = "ad"
-        params["period"] = "overall"
-        params["date_from"] = "0"
-        params["date_to"] = "0"
+        params["period"] = "day"
+        params["date_from"] = "2022-01-01"
+        params["date_to"] = "2022-06-22"
         params["ids"] = context["ad_id"]
         return params
