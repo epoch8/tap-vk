@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Union, List, Iterable
 
 from memoization import cached
+from singer_sdk.exceptions import FatalAPIError, RetriableAPIError
 
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.streams import RESTStream
@@ -19,12 +20,6 @@ class VKStream(RESTStream):
 
     # TODO: Set the API's base URL here:
     url_base = "https://api.vk.com/method"
-
-    # OR use a dynamic url_base:
-    # @property
-    # def url_base(self) -> str:
-    #     """Return the API URL root, configurable via tap settings."""
-    #     return self.config["api_url"]
 
     records_jsonpath = "$[response][*]"
     next_page_token_jsonpath = "$.next_page"  # Or override `get_next_page_token`.
@@ -101,3 +96,14 @@ class VKStream(RESTStream):
         """As needed, append or transform raw data to match expected structure."""
         # TODO: Delete this method if not needed.
         return row
+
+    def validate_response(self, response):
+        super().validate_response(response)
+
+        data = response.json()
+        if data.get("error"):
+            if data['error']['error_code'] in (6, 9):
+                raise RetriableAPIError("Too many requests per second")
+            else:
+                raise FatalAPIError(f"Error message found: {data['error']['error_msg']}")
+

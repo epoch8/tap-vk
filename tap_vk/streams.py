@@ -59,6 +59,12 @@ class AdsStream(VKStream):
         params["include_deleted"] = 1
         return params
 
+    def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
+        """Return a context dictionary for child streams."""
+        return {
+            "ad_id": record["id"],
+        }
+
 
 class AdsLayoutStream(VKStream):
     """Define custom stream."""
@@ -167,6 +173,12 @@ class CampaignsStream(VKStream):
         params["include_deleted"] = 1
         return params
 
+    def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
+        """Return a context dictionary for child streams."""
+        return {
+            "campaign_id": record["id"],
+        }
+
 
 class CategoriesStream(VKStream):
     """Define custom stream."""
@@ -197,4 +209,65 @@ class CategoriesStream(VKStream):
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
         params["lang"] = "en"
+        return params
+
+
+class StatisticsCampaignStream(VKStream):
+    """Define custom stream."""
+
+    name = "statistics_campaign"
+    parent_stream_type = CampaignsStream
+    path = "/ads.getStatistics"
+    primary_keys = ["id"]
+    replication_key = None
+
+    schema = th.PropertiesList(
+        th.Property(
+            "id",
+            th.IntegerType,
+        ),
+        th.Property("type", th.StringType),
+        th.Property("stats", th.StringType)
+    ).to_dict()
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+        params["ids_type"] = "campaign"
+        params["period"] = "day"
+        params["date_from"] = "2022-01-01"
+        params["date_to"] = "2022-06-22"
+        params["ids"] = context["campaign_id"]
+        return params
+
+
+
+class StatisticsAdsStream(VKStream):
+    """Define custom stream."""
+
+    name = "statistics_ads"
+    parent_stream_type = AdsStream
+    path = "/ads.getStatistics"
+    primary_keys = ["id"]
+    replication_key = None
+
+    schema = th.PropertiesList(
+        th.Property(
+            "id",
+            th.IntegerType,
+        ),
+        th.Property("type", th.StringType),
+        th.Property("stats", th.StringType)
+    ).to_dict()
+
+    def get_url_params(
+        self, context: Optional[dict], next_page_token: Optional[Any]
+    ) -> Dict[str, Any]:
+        params = super().get_url_params(context, next_page_token)
+        params["ids_type"] = "ad"
+        params["period"] = "overall"
+        params["date_from"] = "0"
+        params["date_to"] = "0"
+        params["ids"] = context["ad_id"]
         return params
